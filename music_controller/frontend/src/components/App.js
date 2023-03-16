@@ -1,5 +1,10 @@
 import React, { Component } from "react";
-import { render } from "react-dom";
+import ReactDOM from "react-dom/client";
+import HomePage from "./HomePage";
+import JoinRoomPage from "./JoinRoomPage";
+import CreateRoomPage from "./CreateRoomPage";
+import Layout from "./Layout";
+import { BrowserRouter, Routes, Route, Link, Redirect } from "react-router-dom";
 
 class App extends Component {
     constructor(props) {
@@ -7,11 +12,21 @@ class App extends Component {
     }
 
     render() {
-        return <div>Hello</div>;
+        return (
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<Layout />}>
+                        <Route index element={<HomePage />} />
+                        <Route path="/join" element={<JoinRoomPage />} />
+                        <Route path="/create" element={<CreateRoomPage />} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        );
     }
 }
 
 export default App;
 
-const appDiv = document.getElementById('app');
-render(<App />, appDiv);
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
