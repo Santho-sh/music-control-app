@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     Typography,
     Grid,
@@ -15,6 +15,11 @@ import {
 function CreateRoomPage(params) {
     const [canPause, setCanPause] = useState(true);
     const [skipVotes, setSkipVotes] = useState(2);
+    const navigate = useNavigate();
+
+    const handleGoBack = () => {
+        navigate(-1);
+    };
 
     const handeleCreateRoom = () => {
         let data = {
@@ -22,16 +27,17 @@ function CreateRoomPage(params) {
             skip_votes: skipVotes,
         };
 
-        fetch("http://127.0.0.1:8000/api/create-room", {
+        fetch("http://127.0.0.1:8000/api/create", {
             method: "post",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
-        }).then((response) => response.json())
-        .then((data) => {
-            console.log(data)
-        });
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                navigate(`/room/${data.code}`);
+            });
     };
 
     return (
@@ -96,7 +102,11 @@ function CreateRoomPage(params) {
                 </Button>
             </Grid>
             <Grid item xs={12} align={"center"}>
-                <Button variant="outlined" to="/" component={Link}>
+                <Button
+                    variant="outlined"
+                    onClick={handleGoBack}
+                    component={Link}
+                >
                     Back
                 </Button>
             </Grid>

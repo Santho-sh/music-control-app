@@ -1,32 +1,26 @@
-import React, { Component } from "react";
+import React from "react";
 import { Outlet, Link } from "react-router-dom";
 
-class Layout extends Component {
-    constructor(props) {
-        super(props);
-    }
+function Layout(params) {
+    return (
+        <div>
+            <nav>
+                <ul>
+                    <li>
+                        <Link to="/">Home</Link>
+                    </li>
+                    <li>
+                        <Link to="/join">Join</Link>
+                    </li>
+                    <li>
+                        <Link to="/create">Create</Link>
+                    </li>
+                </ul>
+            </nav>
 
-    render() {
-        return (
-            <div>
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/join">Join</Link>
-                        </li>
-                        <li>
-                            <Link to="/create">Create</Link>
-                        </li>
-                    </ul>
-                </nav>
-
-                <Outlet />
-            </div>
-        );
-    }
+            <Outlet />
+        </div>
+    );
 }
 
 export default Layout;
