@@ -6,4 +6,5 @@ urlpatterns = [
     path('create', views.CreateRoomView.as_view()),
     # api/room?code=....
     path('room', views.GetRoom.as_view()),
+    path('join', views.JoinRoom.as_view()),
 ]

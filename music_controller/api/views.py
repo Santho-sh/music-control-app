@@ -6,31 +6,56 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.utils import timezone
 
+
 class RoomView(generics.ListAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
+
 class GetRoom(APIView):
     serializer_class = RoomSerializer
-    lookup_url_kwarg = 'code'
-    
+
     def get(self, request):
-        code = request.GET.get(self.lookup_url_kwarg)
+        code = request.GET.get("code")
         if code != None:
             room = Room.objects.filter(code=code)
-            
+
             if room.exists():
                 data = RoomSerializer(room[0]).data
                 data['is_host'] = self.request.session.session_key == room[0].host
-                
+
                 return Response(data, status=status.HTTP_200_OK)
-            
-            return Response({'message': 'Invalid Room Code'}, status=status.HTTP_404_NOT_FOUND)\
-                
-        return Response({'message': 'Room Code Not Found'}, status=status.HTTP_400_BAD_REQUEST)   
+
+            return Response({'message': 'Room Not Found'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'message': 'Invalid Request'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class JoinRoom(APIView):
+
+    def post(self, request):
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+
+        code = request.data.get("code")
+        if code != None:
+            room = Room.objects.filter(code=code)
+
+            if room.exists(): 
+
+                self.request.session['room_code'] = code
+
+                return Response({'message': 'Room Joined'}, status=status.HTTP_200_OK)
+
+            return Response({'message': 'Room Not Found'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'message': 'Invalid Request'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class CreateRoomView(APIView):
 
     serializer_class = CreateRoomSerializers
+
     def post(self, request):
         if not self.request.session.exists(self.request.session.session_key):
             self.request.session.create()
@@ -56,4 +81,4 @@ class CreateRoomView(APIView):
                 room.save()
             return Response(RoomSerializer(room).data, status=status.HTTP_201_CREATED)
 
-        return Response({'message': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': 'Invalid Request'}, status=status.HTTP_400_BAD_REQUEST)

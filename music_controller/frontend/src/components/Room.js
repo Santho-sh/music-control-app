@@ -18,7 +18,7 @@ function Room(props) {
     });
 
     return (
-        <div>
+        <div className="center">
             <h4>Code:{roomCode}</h4>
             <p>{skipVotes}</p>
             <p>{canPause? 'true':'false'}</p>

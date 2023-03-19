@@ -10,6 +10,7 @@ import {
 
 function JoinRoomPage() {
     const [roomCode, setRoomCode] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleGoBack = () => {
@@ -17,7 +18,25 @@ function JoinRoomPage() {
     };
 
     const handeleJoinRoom = () => {
-        console.log(roomCode);
+        fetch("http://127.0.0.1:8000/api/join", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                code: roomCode,
+            }),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    navigate(`/room/${roomCode}`);
+                } else {
+                    setError("Room Not Found");
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     return (
@@ -30,6 +49,7 @@ function JoinRoomPage() {
             <Grid item xs={12} align={"center"}>
                 <FormControl>
                     <TextField
+                        error={error === "" ? false : true}
                         required={true}
                         type="text"
                         label="Room Code"
