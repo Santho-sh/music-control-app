@@ -5,7 +5,7 @@ import JoinRoomPage from "./JoinRoomPage";
 import CreateRoomPage from "./CreateRoomPage";
 import Room from "./Room";
 import Layout from "./Layout";
-import { BrowserRouter, Routes, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 class App extends Component {
     constructor(props) {

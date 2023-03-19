@@ -12,7 +12,7 @@ import {
     FormControlLabel,
 } from "@mui/material";
 
-function CreateRoomPage(params) {
+function CreateRoomPage() {
     const [canPause, setCanPause] = useState(true);
     const [skipVotes, setSkipVotes] = useState(2);
     const navigate = useNavigate();
@@ -41,7 +41,7 @@ function CreateRoomPage(params) {
     };
 
     return (
-        <Grid container spacing={1}>
+        <Grid container spacing={1} className="center">
             <Grid item xs={12} align={"center"}>
                 <Typography component="h4" variant="h4">
                     Create Room

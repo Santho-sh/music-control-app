@@ -6,3 +6,28 @@
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
+
+a {
+    text-decoration: none;
+    color: black;
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar{
+    display: flex;
+    background-color: rgb(172, 171, 171);
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.navbar a:hover {
+    color: white;
+}
+
+.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
