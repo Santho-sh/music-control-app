@@ -65,7 +65,7 @@ function JoinRoomPage() {
                     variant="outlined"
                     onClick={handeleJoinRoom}
                 >
-                    Join Room
+                    JOIN ROOM
                 </Button>
             </Grid>
             <Grid item xs={12} align={"center"}>
@@ -74,7 +74,7 @@ function JoinRoomPage() {
                     onClick={handleGoBack}
                     component={Link}
                 >
-                    Back
+                    BACK
                 </Button>
             </Grid>
         </Grid>
