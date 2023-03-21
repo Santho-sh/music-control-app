@@ -22,17 +22,15 @@ function CreateRoomPage() {
     };
 
     const handeleCreateRoom = () => {
-        let data = {
-            can_pause: canPause,
-            skip_votes: skipVotes,
-        };
-
-        fetch("http://127.0.0.1:8000/api/create", {
+        fetch("/api/create", {
             method: "post",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify({
+                can_pause: canPause,
+                skip_votes: skipVotes,
+            }),
         })
             .then((response) => response.json())
             .then((data) => {

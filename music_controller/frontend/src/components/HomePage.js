@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Typography, Grid, Button } from "@mui/material";
 
@@ -6,7 +6,7 @@ function HomePage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/user-room")
+        fetch("/api/user-room")
             .then((response) => response.json())
             .then((data) => {
                 if (data.code) {

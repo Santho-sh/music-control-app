@@ -18,7 +18,7 @@ function JoinRoomPage() {
     };
 
     const handeleJoinRoom = () => {
-        fetch("http://127.0.0.1:8000/api/join", {
+        fetch("/api/join", {
             method: "post",
             headers: {
                 "Content-Type": "application/json",

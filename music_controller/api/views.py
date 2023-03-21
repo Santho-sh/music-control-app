@@ -13,6 +13,28 @@ class RoomView(generics.ListAPIView):
     serializer_class = RoomSerializer
 
 
+class DeleteRoom(APIView):
+    def get(self, request):
+        
+        code = request.GET.get('code')
+        user = self.request.session.session_key
+        self.request.session.pop('room_code')
+        
+        room = Room.objects.filter(code=code, host=user)
+        if room.exists:
+            room[0].delete()
+            return Response({'message': 'Room Deleted'}, status=status.HTTP_200_OK)
+        
+        return Response({'message': 'Invalid Request'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LeaveRoom(APIView):
+    def get(self, request):
+        if 'room_code' in self.request.session:
+            self.request.session.pop('room_code')
+        return Response({'message': 'Leaved The Room'}, status=status.HTTP_200_OK)
+
+
 class UserInRoom(APIView):
     def get(self, request):
         if not self.request.session.exists(self.request.session.session_key):
@@ -31,14 +53,15 @@ class GetRoom(APIView):
         code = request.GET.get("code")
         if code != None:
             room = Room.objects.filter(code=code)
-
             if room.exists():
                 data = RoomSerializer(room[0]).data
                 data['is_host'] = self.request.session.session_key == room[0].host
-
                 return Response(data, status=status.HTTP_200_OK)
 
-            return Response({'message': 'Room Not Found'}, status=status.HTTP_404_NOT_FOUND)
+            else:
+                # Delete the old room code which does not exists
+                self.request.session.pop('room_code')
+                return Response({'message': 'Room Not Found'}, status=status.HTTP_404_NOT_FOUND)
 
         return Response({'message': 'Invalid Request'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -91,6 +114,10 @@ class CreateRoomView(APIView):
                 room = Room(host=host, can_pause=can_pause,
                             skip_votes=skip_votes)
                 room.save()
+                data = RoomSerializer(room).data
+                print(data)
+                self.request.session['room_code'] = data['code']
+
             return Response(RoomSerializer(room).data, status=status.HTTP_201_CREATED)
 
         return Response({'message': 'Invalid Request'}, status=status.HTTP_400_BAD_REQUEST)
