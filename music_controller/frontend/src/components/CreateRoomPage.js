@@ -11,6 +11,7 @@ import {
     FormHelperText,
     RadioGroup,
     FormControlLabel,
+    Alert,
 } from "@mui/material";
 
 function CreateRoomPage(props) {
@@ -58,7 +59,6 @@ function CreateRoomPage(props) {
             } else {
                 setErrorMsg("Error Updating Room");
             }
-            
         });
     };
 
@@ -114,9 +114,17 @@ function CreateRoomPage(props) {
 
     return (
         <Grid container spacing={1} className="center">
-            <Grid item xs={12} align={"center"}>
+            <Grid item xs={12} align={"center"} style={{ display: "flex", justifyContent: "center" }}>
                 <Collapse in={errorMsg !== "" || successMsg !== ""}>
-                    {successMsg}
+                    {errorMsg !== "" ? (
+                        <Alert severity="error" onClose={() => setErrorMsg("")}>
+                            {errorMsg}
+                        </Alert>
+                    ) : (
+                        <Alert severity="success" onClose={() => setSuccessMsg("")}>
+                            {successMsg}
+                        </Alert>
+                    )}
                 </Collapse>
             </Grid>
             <Grid item xs={12} align={"center"}>
