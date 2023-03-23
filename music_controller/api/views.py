@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, status
-from .serializers import RoomSerializer, CreateRoomSerializers
+from .serializers import RoomSerializer, CreateRoomSerializers, UpdateRoomSerializers
 from .models import Room
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -15,16 +15,40 @@ class RoomView(generics.ListAPIView):
 
 class DeleteRoom(APIView):
     def get(self, request):
-        
+
         code = request.GET.get('code')
         user = self.request.session.session_key
         self.request.session.pop('room_code')
-        
+
         room = Room.objects.filter(code=code, host=user)
         if room.exists:
             room[0].delete()
             return Response({'message': 'Room Deleted'}, status=status.HTTP_200_OK)
-        
+
+        return Response({'message': 'Invalid Request'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateRoom(APIView):
+    serializer_class = UpdateRoomSerializers
+
+    def patch(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            can_pause = serializer.data.get('can_pause')
+            skip_votes = serializer.data.get('skip_votes')
+            code = serializer.data.get('code')
+
+            user = self.request.session.session_key
+            query = Room.objects.filter(code=code, host=user)
+            if query.exists():
+                room = query[0]
+                room.can_pause = can_pause
+                room.skip_votes = skip_votes
+                room.save()
+                return Response(RoomSerializer(room).data, status=status.HTTP_200_OK)
+
+            return Response({'message': 'Room Not Found'}, status=status.HTTP_404_NOT_FOUND)
+
         return Response({'message': 'Invalid Request'}, status=status.HTTP_400_BAD_REQUEST)
 
 

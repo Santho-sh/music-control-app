@@ -12,9 +12,10 @@ import {
     FormControlLabel,
 } from "@mui/material";
 
-function CreateRoomPage() {
-    const [canPause, setCanPause] = useState(true);
-    const [skipVotes, setSkipVotes] = useState(2);
+function CreateRoomPage(props) {
+
+    const [canPause, setCanPause] = useState(props.canPause);
+    const [skipVotes, setSkipVotes] = useState(props.skipVotes);
     const navigate = useNavigate();
 
     const handleGoBack = () => {
@@ -38,11 +39,61 @@ function CreateRoomPage() {
             });
     };
 
+    const renderCreateRoom = () => {
+        return (
+            <Grid container spacing={1}>
+                <Grid item mt={3} xs={12} align={"center"}>
+                    <Button
+                        color="success"
+                        variant="outlined"
+                        onClick={handeleCreateRoom}
+                    >
+                        Create Room
+                    </Button>
+                </Grid>
+                <Grid item xs={12} align={"center"}>
+                    <Button
+                        variant="outlined"
+                        onClick={handleGoBack}
+                        component={Link}
+                    >
+                        Back
+                    </Button>
+                </Grid>
+            </Grid>
+        );
+    };
+
+    const renderSaveRoom = () => {
+        return (
+            <Grid container spacing={1}>
+                <Grid mt={3} item xs={12} align={"center"}>
+                    <Button
+                        color="success"
+                        variant="outlined"
+                        onClick={props.updateCallBack}
+                    >
+                        Save
+                    </Button>
+                </Grid>
+                <Grid item xs={12} align={"center"}>
+                    <Button
+                        color="error"
+                        variant="outlined"
+                        onClick={props.closeCallBack}
+                    >
+                        Close
+                    </Button>
+                </Grid>
+            </Grid>
+        );
+    }
+
     return (
         <Grid container spacing={1} className="center">
             <Grid item xs={12} align={"center"}>
                 <Typography component="h4" variant="h4">
-                    Create Room
+                    {props.update ? "Update Room" : "Create Room"}
                 </Typography>
             </Grid>
             <Grid item xs={12} align={"center"}>
@@ -90,26 +141,18 @@ function CreateRoomPage() {
                     />
                 </FormControl>
             </Grid>
-            <Grid item xs={12} align={"center"}>
-                <Button
-                    color="success"
-                    variant="outlined"
-                    onClick={handeleCreateRoom}
-                >
-                    Create Room
-                </Button>
-            </Grid>
-            <Grid item xs={12} align={"center"}>
-                <Button
-                    variant="outlined"
-                    onClick={handleGoBack}
-                    component={Link}
-                >
-                    Back
-                </Button>
-            </Grid>
+            {props.update ? renderSaveRoom() : renderCreateRoom()}
         </Grid>
     );
 }
+
+CreateRoomPage.defaultProps = {
+    update: false,
+    skipVotes: 2,
+    canPause: false,
+    roomCode: null,
+    updateCallback: () => {},
+    closeCallback: () => {},
+};
 
 export default CreateRoomPage;

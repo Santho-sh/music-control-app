@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Typography, Grid, Button } from "@mui/material";
+import CreateRoomPage from "./CreateRoomPage";
 
 function Room() {
     const [skipVotes, setSkipVotes] = useState(1);
     const [canPause, setCanPause] = useState(false);
     const [isHost, setIsHost] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
     const { roomCode } = useParams();
     const navigate = useNavigate();
 
@@ -15,7 +17,6 @@ function Room() {
                 return response.json();
             })
             .then(function (data) {
-                console.log(data);
                 setSkipVotes(data.skip_votes);
                 setCanPause(data.can_pause);
                 setIsHost(data.is_host);
@@ -33,7 +34,38 @@ function Room() {
         });
     };
 
-    const handeleSkipVote = () => {};
+    const renderSettingsButton = () => {
+        return (
+            <Grid item xs={12} align={"center"}>
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => setShowSettings(true)}
+                >
+                    Settings
+                </Button>
+            </Grid>
+        );
+    };
+
+    const renderSettings = () => {
+        return (
+            <Grid container spacing={1} alignItems={"center"}>
+                <Grid item xs={12} align={"center"}>
+                    <CreateRoomPage
+                        update={true}
+                        skipVotes={skipVotes}
+                        canPause={canPause}
+                        roomCode={roomCode}
+                        closeCallBack={() => setShowSettings(false)}
+                        updateCallBack={() => {
+                            console.log("updated");
+                        }}
+                    />
+                </Grid>
+            </Grid>
+        );
+    };
 
     const handeleDeleteRoom = () => {
         fetch(`/api/delete?code=${roomCode}`).then((response) => {
@@ -43,7 +75,12 @@ function Room() {
         });
     };
 
+    const handeleSkipVote = () => {};
     const handelePause = () => {};
+
+    if (showSettings) {
+        return renderSettings();
+    }
 
     return (
         <Grid container spacing={1} className="center">
@@ -74,6 +111,9 @@ function Room() {
                     VOTE TO SKIP
                 </Button>
             </Grid>
+
+            {isHost ? renderSettingsButton() : null}
+
             <Grid item xs={12} align={"center"}>
                 <Button
                     variant="outlined"
