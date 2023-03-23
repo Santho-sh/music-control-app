@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Collapse } from "@mui/material";
 import {
     Typography,
     Grid,
@@ -13,9 +14,10 @@ import {
 } from "@mui/material";
 
 function CreateRoomPage(props) {
-
     const [canPause, setCanPause] = useState(props.canPause);
     const [skipVotes, setSkipVotes] = useState(props.skipVotes);
+    const [errorMsg, setErrorMsg] = useState("");
+    const [successMsg, setSuccessMsg] = useState("");
     const navigate = useNavigate();
 
     const handleGoBack = () => {
@@ -37,6 +39,27 @@ function CreateRoomPage(props) {
             .then((data) => {
                 navigate(`/room/${data.code}`);
             });
+    };
+
+    const handeleUpdateRoom = () => {
+        fetch("/api/update", {
+            method: "patch",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                code: props.roomCode,
+                can_pause: canPause,
+                skip_votes: skipVotes,
+            }),
+        }).then((response) => {
+            if (response.ok) {
+                setSuccessMsg("Room Updated Successfully");
+            } else {
+                setErrorMsg("Error Updating Room");
+            }
+            
+        });
     };
 
     const renderCreateRoom = () => {
@@ -64,14 +87,14 @@ function CreateRoomPage(props) {
         );
     };
 
-    const renderSaveRoom = () => {
+    const renderUpdateRoom = () => {
         return (
             <Grid container spacing={1}>
                 <Grid mt={3} item xs={12} align={"center"}>
                     <Button
                         color="success"
                         variant="outlined"
-                        onClick={props.updateCallBack}
+                        onClick={handeleUpdateRoom}
                     >
                         Save
                     </Button>
@@ -87,10 +110,15 @@ function CreateRoomPage(props) {
                 </Grid>
             </Grid>
         );
-    }
+    };
 
     return (
         <Grid container spacing={1} className="center">
+            <Grid item xs={12} align={"center"}>
+                <Collapse in={errorMsg !== "" || successMsg !== ""}>
+                    {successMsg}
+                </Collapse>
+            </Grid>
             <Grid item xs={12} align={"center"}>
                 <Typography component="h4" variant="h4">
                     {props.update ? "Update Room" : "Create Room"}
@@ -104,7 +132,7 @@ function CreateRoomPage(props) {
                     <RadioGroup
                         row
                         aria-labelledby="demo-radio-buttons-group-label"
-                        defaultValue="true"
+                        defaultValue={props.canPause.toString()}
                         name="radio-buttons-group"
                         onChange={(e) =>
                             setCanPause(
@@ -141,7 +169,7 @@ function CreateRoomPage(props) {
                     />
                 </FormControl>
             </Grid>
-            {props.update ? renderSaveRoom() : renderCreateRoom()}
+            {props.update ? renderUpdateRoom() : renderCreateRoom()}
         </Grid>
     );
 }

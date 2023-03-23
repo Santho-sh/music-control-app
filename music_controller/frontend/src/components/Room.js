@@ -11,7 +11,7 @@ function Room() {
     const { roomCode } = useParams();
     const navigate = useNavigate();
 
-    useEffect(() => {
+    const getRoomDetails = () => {
         fetch(`/api/room?code=${roomCode}`)
             .then(function (response) {
                 return response.json();
@@ -24,6 +24,10 @@ function Room() {
             .catch(() => {
                 navigate("/");
             });
+    };
+
+    useEffect(() => {
+        getRoomDetails();
     }, []);
 
     const handeleLeaveRoom = () => {
@@ -57,9 +61,10 @@ function Room() {
                         skipVotes={skipVotes}
                         canPause={canPause}
                         roomCode={roomCode}
-                        closeCallBack={() => setShowSettings(false)}
-                        updateCallBack={() => {
-                            console.log("updated");
+                        closeCallBack={() => {
+                            // Update to new data
+                            getRoomDetails();
+                            setShowSettings(false);
                         }}
                     />
                 </Grid>
