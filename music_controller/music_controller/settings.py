@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'frontend',
+    'spotify',
 ]
 
 # Add this to Fix: csrf_token error
