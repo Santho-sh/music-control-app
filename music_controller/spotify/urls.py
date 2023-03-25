@@ -4,5 +4,6 @@ from . import views
 urlpatterns = [
     path('auth-url', views.AuthURL.as_view()),
     path('is-authenticated', views.IsAuthenticated.as_view()),
+    path('current-song', views.CurrentSong.as_view()),
     path('callback', views.Callback),
 ]
