@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Typography, Grid, Button } from "@mui/material";
 import CreateRoomPage from "./CreateRoomPage";
+import MusicPlayer from "./MusicPlayer";
 
 function Room() {
     const [skipVotes, setSkipVotes] = useState(1);
@@ -9,8 +10,35 @@ function Room() {
     const [isHost, setIsHost] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
     const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
+    const [song, setSong] = useState({});
     const { roomCode } = useParams();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        getRoomDetails();
+    }, []);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            getCurrentSong();
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const getCurrentSong = () => {
+        fetch(`/spotify/current-song`)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return {};
+                }
+            })
+            .then((data) => {
+                setSong(data);
+                console.log(data);
+            });
+    };
 
     const getRoomDetails = () => {
         fetch(`/api/room?code=${roomCode}`)
@@ -36,7 +64,6 @@ function Room() {
             .then((response) => response.json())
             .then((data) => {
                 setSpotifyAuthenticated(data.status);
-                console.log(data);
                 if (!data.status) {
                     fetch("/spotify/auth-url")
                         .then((response) => response.json())
@@ -46,10 +73,6 @@ function Room() {
                 }
             });
     };
-
-    useEffect(() => {
-        getRoomDetails();
-    }, []);
 
     const handeleLeaveRoom = () => {
         fetch(`/api/leave-room`).then((response) => {
@@ -101,9 +124,6 @@ function Room() {
         });
     };
 
-    const handeleSkipVote = () => {};
-    const handelePause = () => {};
-
     if (showSettings) {
         return renderSettings();
     }
@@ -115,27 +135,11 @@ function Room() {
                     Code:{roomCode}
                 </Typography>
             </Grid>
-            <Grid item xs={12} align={"center"}>
-                <Typography component="p" variant="p">
-                    {isHost ? "Your Room" : "Joined Room"}
-                </Typography>
-            </Grid>
-
-            <Grid item xs={12} align={"center"}>
-                <Button variant="outlined" color="error" onClick={handelePause}>
-                    {isHost ? "PAUSE" : "NONE"}
-                </Button>
-            </Grid>
-
+            <MusicPlayer {...song} />
             <Grid item xs={12} align={"center"}>
                 <Typography component="p" variant="p">
                     SKIP VOTES: {skipVotes}
                 </Typography>
-            </Grid>
-            <Grid item xs={12} align={"center"}>
-                <Button variant="outlined" onClick={handeleSkipVote}>
-                    VOTE TO SKIP
-                </Button>
             </Grid>
 
             {isHost ? renderSettingsButton() : null}

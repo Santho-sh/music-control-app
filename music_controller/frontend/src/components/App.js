@@ -4,7 +4,6 @@ import HomePage from "./HomePage";
 import JoinRoomPage from "./JoinRoomPage";
 import CreateRoomPage from "./CreateRoomPage";
 import Room from "./Room";
-import Layout from "./Layout";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
