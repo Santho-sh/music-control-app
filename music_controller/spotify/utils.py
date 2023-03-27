@@ -69,7 +69,6 @@ def refresh_tokens(session_key):
 
 def spotify_api_request(session_key, endpoint, post_=False, put_=False):
     tokens = get_user_tokens(session_key)
-    print(tokens.access_token)
     headers = {'Content-Type': 'application/json',
                'Authorization': f"Bearer {tokens.access_token}"}
 
@@ -79,7 +78,6 @@ def spotify_api_request(session_key, endpoint, post_=False, put_=False):
         put(BASE_URL + endpoint, headers=headers)
 
     response = get(BASE_URL + endpoint, {}, headers=headers)
-
     try:
         return response.json()
     except:

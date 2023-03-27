@@ -135,7 +135,7 @@ function Room() {
                     Code:{roomCode}
                 </Typography>
             </Grid>
-            <MusicPlayer {...song} />
+            <MusicPlayer {...song} isHost={isHost} />
             <Grid item xs={12} align={"center"}>
                 <Typography component="p" variant="p">
                     SKIP VOTES: {skipVotes}
